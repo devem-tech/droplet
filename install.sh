@@ -18,10 +18,6 @@ finished() {
   echo -e "🍺  ${CYAN}Done${NC}"
 }
 
-docker_compose_latest_version() {
-  curl --silent https://api.github.com/repos/docker/compose/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
-}
-
 # Go
 log "bash-prompt"
 curl -s $FS/root/.bash_aliases -o $HOME/.bash_aliases && \
@@ -29,24 +25,13 @@ curl -s $FS/root/.bash_aliases -o $HOME/.bash_aliases && \
   exit 1
 
 log "docker"
-apt update && \
-  apt install -y \
-    curl \
-    htop \
-    gnupg \
-    lsb-release \
-    ca-certificates && \
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
-  echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
-  apt update && \
-  DEBIAN_FRONTEND=noninteractive apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin ||
+  curl -s https://get.docker.com | sh ||
   exit 1
 
 log "docker-color-output"
-gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/docker-color-output-keyring.gpg --keyserver keyserver.ubuntu.com --recv CAB3412463E1567A && \
-  chmod 644 /usr/share/keyrings/docker-color-output-keyring.gpg && \
-  rm -f /usr/share/keyrings/docker-color-output-keyring.gpg~ && \
-  echo "deb [signed-by=/usr/share/keyrings/docker-color-output-keyring.gpg] https://ppa.launchpadcontent.net/dldash/core/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/docker-color-output.list && \
+curl -fsSL https://keyserver.ubuntu.com/pks/lookup?op=get\&search=0xcab3412463e1567a -o /etc/apt/keyrings/docker-color-output.asc && \
+  chmod a+r /etc/apt/keyrings/docker-color-output.asc && \
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker-color-output.asc] https://ppa.launchpadcontent.net/dldash/core/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") main" | tee /etc/apt/sources.list.d/docker-color-output.list > /dev/null && \
   apt update && \
   apt install -y docker-color-output && \
   apt update && apt upgrade -y && apt autoremove -y && apt clean ||
