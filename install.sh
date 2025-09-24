@@ -21,7 +21,8 @@ finished() {
 # Go
 log "bash-prompt"
 curl -s $FS/root/.bash_aliases -o $HOME/.bash_aliases && \
-  curl -s $FS/root/.bash_prompt -o $HOME/.bash_prompt ||
+  curl -s $FS/root/.bash_prompt -o $HOME/.bash_prompt && \
+  curl -s $FS/root/.config/docker-color-output/config.json -o $HOME/.config/docker-color-output/config.json ||
   exit 1
 
 log "docker"
