@@ -6,5 +6,5 @@ curl -s https://raw.githubusercontent.com/devem-tech/droplet/main/install.sh | b
 
 ### Tested on
 
-- Docker 27.03
-- Ubuntu 24.04 LTS
+- ✅ Docker 28.4.0
+- ✅ Ubuntu 24.04 LTS
